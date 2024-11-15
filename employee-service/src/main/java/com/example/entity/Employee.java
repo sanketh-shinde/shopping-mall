@@ -14,16 +14,11 @@ import java.time.LocalDate;
 public class Employee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String name;
     private String phoneNumber;
 
     private LocalDate joiningDate;
-
-    @ManyToOne
-    @JoinColumn(name = "manager_id")
-    private Manager manager;
 
 }

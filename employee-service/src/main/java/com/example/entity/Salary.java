@@ -15,7 +15,6 @@ public class Salary {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-
     private int year;
 
     private double salary;
