@@ -92,15 +92,14 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ApiResponse<Object>> handleStockNotFoundException(StockNotFoundException ex) {
         ApiResponse<Object> response = new ApiResponse<>(
-                "ERROR",
+                HttpStatus.BAD_REQUEST,
                 ex.getMessage(),
-                null,
                 null
         );
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-    // Handle validation exceptions (e.g., @Valid)
+    // Handle validation exceptions ( @Valid)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ApiResponse<Object>> handleValidationException(MethodArgumentNotValidException ex) {
@@ -110,10 +109,9 @@ public class GlobalExceptionHandler {
         );
 
         ApiResponse<Object> response = new ApiResponse<>(
-                "ERROR",
-                "Validation failed",
-                null,
-                fieldErrors
+                HttpStatus.BAD_REQUEST,
+                fieldErrors.toString(),
+                null
         );
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
@@ -123,9 +121,8 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ApiResponse<Object>> handleRuntimeException(RuntimeException ex) {
         ApiResponse<Object> response = new ApiResponse<>(
-                "ERROR",
+                HttpStatus.INTERNAL_SERVER_ERROR,
                 "An unexpected error occurred: " + ex.getMessage(),
-                null,
                 null
         );
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -136,10 +133,10 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ApiResponse<Object>> handleGenericException(Exception ex) {
         ApiResponse<Object> response = new ApiResponse<>(
-                "ERROR",
+                HttpStatus.INTERNAL_SERVER_ERROR,
                 "An unexpected error occurred: " + ex.getMessage(),
-                null,
                 null
+
         );
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }

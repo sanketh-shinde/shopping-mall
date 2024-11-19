@@ -5,6 +5,7 @@ import com.example.stock_service.service.StockService;
 import com.example.stock_service.util.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +24,9 @@ public class StockController {
     public ResponseEntity<ApiResponse<Stock>> createStock(@Valid @RequestBody Stock stock) {
         Stock createdStock = stockService.createStock(stock);
         ApiResponse<Stock> response = new ApiResponse<>(
-                "SUCCESS",
+                HttpStatus.OK,
                 "Stock created successfully",
-                createdStock,
-                null
+                createdStock
         );
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -36,10 +36,9 @@ public class StockController {
     public ResponseEntity<ApiResponse<Stock>> findStockById(@PathVariable int id) {
         Stock stockById = stockService.findStockById(id);
         ApiResponse<Stock> response = new ApiResponse<>(
-                "SUCCESS",
+                HttpStatus.OK,
                 "Stock fetched successfully",
-                stockById,
-                null
+                stockById
         );
         return ResponseEntity.ok(response);
     }
@@ -49,10 +48,9 @@ public class StockController {
     public ResponseEntity<ApiResponse<List<Stock>>> findAllStock() {
         List<Stock> stocks = stockService.findAllStock();
         ApiResponse<List<Stock>> response = new ApiResponse<>(
-                "SUCCESS",
+                HttpStatus.OK,
                 "All stocks fetched successfully",
-                stocks,
-                null
+                stocks
         );
         return ResponseEntity.ok(response);
     }
@@ -62,10 +60,9 @@ public class StockController {
     public ResponseEntity<ApiResponse<Stock>> updateStock(@RequestParam int id, @RequestParam double price) {
         Stock updatedStock = stockService.updatePrice(id, price);
         ApiResponse<Stock> response = new ApiResponse<>(
-                "SUCCESS",
+                HttpStatus.OK,
                 "Stock price updated successfully",
-                updatedStock,
-                null
+                updatedStock
         );
         return ResponseEntity.ok(response);
     }
@@ -75,10 +72,9 @@ public class StockController {
     public ResponseEntity<ApiResponse<String>> deleteStock(@PathVariable int id) {
         stockService.deleteStock(id);
         ApiResponse<String> response = new ApiResponse<>(
-                "SUCCESS",
+                HttpStatus.OK,
                 "Stock deleted successfully",
-                "Deleted Successfully",
-                null
+                "Deleted Successfully"
         );
         return ResponseEntity.ok(response);
     }
@@ -88,10 +84,9 @@ public class StockController {
     public ResponseEntity<ApiResponse<List<Stock>>> addNewStock(@Valid @RequestBody List<Stock> stocks) {
         List<Stock> updatedStocks = stockService.addNewStock(stocks);
         ApiResponse<List<Stock>> response = new ApiResponse<>(
-                "SUCCESS",
+                HttpStatus.OK,
                 "New stocks added successfully",
-                updatedStocks,
-                null
+                updatedStocks
         );
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -101,10 +96,9 @@ public class StockController {
     public ResponseEntity<ApiResponse<List<Stock>>> findStockByCategory(@PathVariable String category) {
         List<Stock> stocks = stockService.findStockByCategory(category);
         ApiResponse<List<Stock>> response = new ApiResponse<>(
-                "SUCCESS",
+                HttpStatus.OK,
                 "Stocks fetched by category successfully",
-                stocks,
-                null
+                stocks
         );
         return ResponseEntity.ok(response);
     }
@@ -114,10 +108,9 @@ public class StockController {
     public ResponseEntity<ApiResponse<Integer>> getStockQuantity(@PathVariable int id) {
         int quantity = stockService.getStockQuantity(id);
         ApiResponse<Integer> response = new ApiResponse<>(
-                "SUCCESS",
+                HttpStatus.OK,
                 "Stock quantity fetched successfully",
-                quantity,
-                null
+                quantity
         );
         return ResponseEntity.ok(response);
     }
@@ -127,10 +120,9 @@ public class StockController {
     public ResponseEntity<ApiResponse<List<Stock>>> bulkUpdateStockPrice(@RequestBody List<Stock> stocks) {
         List<Stock> updatedStocks = stockService.bulkUpdateStockPrice(stocks);
         ApiResponse<List<Stock>> response = new ApiResponse<>(
-                "SUCCESS",
+                HttpStatus.OK,
                 "Stock prices updated successfully",
-                updatedStocks,
-                null
+                updatedStocks
         );
         return ResponseEntity.ok(response);
     }
@@ -140,10 +132,9 @@ public class StockController {
     public ResponseEntity<ApiResponse<List<Stock>>> findStockByPriceRange(@RequestParam double minPrice, @RequestParam double maxPrice) {
         List<Stock> stocks = stockService.findStockByPriceRange(minPrice, maxPrice);
         ApiResponse<List<Stock>> response = new ApiResponse<>(
-                "SUCCESS",
+                HttpStatus.OK,
                 "Stocks fetched by price range successfully",
-                stocks,
-                null
+                stocks
         );
         return ResponseEntity.ok(response);
     }
@@ -153,8 +144,8 @@ public class StockController {
     public ResponseEntity<ApiResponse<Stock>> findStockByProductName(@PathVariable String productName) {
         Stock stock = stockService.findStockByProductName(productName);
         ApiResponse<Stock> response = stock != null
-                ? new ApiResponse<>("SUCCESS", "Stock fetched successfully", stock, null)
-                : new ApiResponse<>("ERROR", "Stock not found with the given product name", null, null);
+                ? new ApiResponse<>(HttpStatus.OK, "Stock fetched successfully", stock)
+                : new ApiResponse<>(HttpStatus.NOT_FOUND, "Stock not found with the given product name", null);
         return ResponseEntity.status(stock != null ? HttpStatus.OK : HttpStatus.NOT_FOUND).body(response);
     }
 
@@ -163,10 +154,9 @@ public class StockController {
     public ResponseEntity<ApiResponse<Stock>> updateQuantityAfterSell(@RequestParam int sellQuantity, @RequestParam int stockId) {
         Stock updatedStock = stockService.updateQuantityAfterSell(sellQuantity, stockId);
         ApiResponse<Stock> response = new ApiResponse<>(
-                "SUCCESS",
+                HttpStatus.OK,
                 "Stock quantity updated successfully after sell",
-                updatedStock,
-                null
+                updatedStock
         );
         return ResponseEntity.ok(response);
     }

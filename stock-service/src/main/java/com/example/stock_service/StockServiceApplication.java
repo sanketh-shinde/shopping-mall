@@ -4,9 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.w3c.dom.stylesheets.LinkStyle;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
@@ -19,7 +17,7 @@ import java.util.stream.Stream;
 public class StockServiceApplication {
 
 	public static void main(String[] args) {
-		//SpringApplication.run(StockServiceApplication.class, args);
+		SpringApplication.run(StockServiceApplication.class, args);
 
 
 	}
