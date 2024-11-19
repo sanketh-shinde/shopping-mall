@@ -1,25 +1,25 @@
-package com.example.dto;
+package com.example.sales_service.dto;
 
-import com.example.entity.Manager;
-import com.example.entity.Role;
+
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.Set;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmployeeDTO {
+@Builder
+@Data
+public class Employee {
 
     private Integer id;
     private String name;
     private String phoneNumber;
     private double salary;
     private LocalDate joiningDate;
-    private int year;
     private Set<Role> roles;
     private Manager manager;
 
