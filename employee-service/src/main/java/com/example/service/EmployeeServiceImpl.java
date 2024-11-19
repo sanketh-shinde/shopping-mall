@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.dto.EmployeeDTO;
 import com.example.entity.*;
+import com.example.exception.EmployeeNotFoundException;
 import com.example.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private ManagerRepository managerRepository;
 
     @Override
-    public Employee createEmployee(EmployeeDTO employeeDTO) {
+    public Employee createEmployee(EmployeeDTO employeeDTO) throws EmployeeNotFoundException {
         Employee employee = new Employee();
         employee.setId(employeeDTO.getId());
         employee.setName(employeeDTO.getName());
@@ -40,9 +41,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Employee foundEmployee = employeeRepository
                 .findById(savedEmployee.getId())
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
-        Role role = roleRepository.findById(employeeDTO.getManager().getRoleMapping().getRole().getId())
-                .orElseThrow(() -> new RuntimeException("Role not found"));
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
+        Role role = roleRepository.findById(employeeDTO
+                        .getManager()
+                        .getRoleMapping()
+                        .getRole()
+                        .getId())
+                .orElseThrow(() -> new EmployeeNotFoundException("Role not found"));
 
         RoleMapping roleMapping = new RoleMapping();
         roleMapping.setEmployee(foundEmployee);
@@ -51,7 +56,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Manager manager = new Manager();
         manager.setRoleMapping(savedRoleMapping);
-        manager.setEmployees(employeeDTO.getManager().getEmployees());
+        manager.setEmployees(employeeDTO
+                .getManager()
+                .getEmployees());
         managerRepository.save(manager);
 
         Salary salary = new Salary();
@@ -64,9 +71,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeDTO getEmployee(Integer id) {
+    public EmployeeDTO getEmployee(Integer id) throws EmployeeNotFoundException {
         Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
 
         Salary salary = salaryRepository.findByEmployeeId(employee.getId());
         Manager manger = managerRepository.findByRoleMappingId(employee.getId());
@@ -84,6 +91,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeDTO.setRoles(Set.of(manger.getRoleMapping().getRole()));
 
         return employeeDTO;
+    }
+
+    @Override
+    public void getEmployeeHierarchy(Integer id) throws EmployeeNotFoundException {
+        
     }
 
 }

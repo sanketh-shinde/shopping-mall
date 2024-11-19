@@ -5,6 +5,7 @@ import com.example.entity.Employee;
 import com.example.entity.Manager;
 import com.example.entity.RoleMapping;
 import com.example.entity.Salary;
+import com.example.exception.EmployeeNotFoundException;
 import com.example.repository.EmployeeRepository;
 import com.example.repository.ManagerRepository;
 import com.example.repository.RoleMappingRepository;
@@ -33,12 +34,13 @@ public class ManagerServiceImpl implements ManagerService {
     private SalaryRepository salaryRepository;
 
     @Override
-    public EmployeeDTO assignManager(Integer empId, Integer managerId, Manager manager) {
+    public EmployeeDTO assignManager(Integer empId, Integer managerId, Manager manager)
+            throws EmployeeNotFoundException {
         Employee employee =  employeeRepository.findById(empId)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
 
         Manager fetchedManager = managerRepository.findById(managerId)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
 
         Salary salary = salaryRepository.findByEmployeeId(employee.getId());
 
