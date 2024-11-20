@@ -98,7 +98,8 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public List<Stock> findStockByCategory(String category) {
-        Stock stock = stockRepository.findByCategory(category).orElseThrow(() -> new StockNotFoundException("Stock Not Found with the given Category " + category));
+        Stock stock = stockRepository.findByCategory(category).orElseThrow(() ->
+                new StockNotFoundException("Stock Not Found with the given Category " + category));
      return List.of(stock);
     }
 
