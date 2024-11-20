@@ -1,6 +1,6 @@
 package com.example.controller;
 
-import com.example.dto.EmployeeDTO;
+import com.example.dto.ManagerDTO;
 import com.example.entity.Manager;
 import com.example.exception.EmployeeNotFoundException;
 import com.example.response.ApiResponse;
@@ -18,12 +18,12 @@ public class ManagerController {
     private ManagerService managerService;
 
     @PutMapping("/assignManager")
-    public ResponseEntity<ApiResponse<EmployeeDTO>> assignManager(
+    public ResponseEntity<ApiResponse<ManagerDTO>> assignManager(
             @RequestParam Integer empId,
             @RequestParam Integer managerId,
             @RequestBody Manager manager
     ) throws EmployeeNotFoundException {
-        ApiResponse<EmployeeDTO> apiResponse = new ApiResponse<>(
+        ApiResponse<ManagerDTO> apiResponse = new ApiResponse<>(
                 HttpStatus.OK,
                 "manager assigned successfully",
                 managerService.assignManager(empId, managerId, manager)

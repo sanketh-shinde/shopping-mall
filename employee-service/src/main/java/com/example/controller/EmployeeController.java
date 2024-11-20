@@ -1,8 +1,9 @@
 package com.example.controller;
 
+import com.example.dto.DetailsDTO;
 import com.example.dto.EmployeeDTO;
+import com.example.dto.EmployeeHierarchyDTO;
 import com.example.entity.Employee;
-import com.example.entity.Manager;
 import com.example.exception.EmployeeNotFoundException;
 import com.example.response.ApiResponse;
 import com.example.service.EmployeeService;
@@ -10,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/employees")
@@ -32,9 +31,9 @@ public class EmployeeController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<ApiResponse<EmployeeDTO>> getEmployee(@PathVariable Integer id)
+    public ResponseEntity<ApiResponse<DetailsDTO>> getEmployee(@PathVariable Integer id)
             throws EmployeeNotFoundException {
-        ApiResponse<EmployeeDTO> apiResponse = new ApiResponse<>(
+        ApiResponse<DetailsDTO> apiResponse = new ApiResponse<>(
                 HttpStatus.OK,
                 "employee found",
                 employeeService.getEmployee(id)
@@ -43,8 +42,8 @@ public class EmployeeController {
     }
 
     @GetMapping("/hierarchy/{id}")
-    public void getHierarchy(@PathVariable Integer id) {
-       employeeService.getEmployeeHierarchy(id);
+    public EmployeeHierarchyDTO getHierarchy(@PathVariable Integer id) throws EmployeeNotFoundException {
+       return employeeService.getEmployeeHierarchy(id);
     }
 
 }

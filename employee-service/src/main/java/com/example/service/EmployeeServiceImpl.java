@@ -1,6 +1,8 @@
 package com.example.service;
 
+import com.example.dto.DetailsDTO;
 import com.example.dto.EmployeeDTO;
+import com.example.dto.EmployeeHierarchyDTO;
 import com.example.entity.*;
 import com.example.exception.EmployeeNotFoundException;
 import com.example.repository.*;
@@ -8,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
+import java.util.List;
 
 @Transactional
 @Service
@@ -42,60 +44,72 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee foundEmployee = employeeRepository
                 .findById(savedEmployee.getId())
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
-        Role role = roleRepository.findById(employeeDTO
-                        .getManager()
-                        .getRoleMapping()
-                        .getRole()
-                        .getId())
-                .orElseThrow(() -> new EmployeeNotFoundException("Role not found"));
 
+        List<Role> roleList = roleRepository.saveAll(employeeDTO.getRoles());
         RoleMapping roleMapping = new RoleMapping();
         roleMapping.setEmployee(foundEmployee);
-        roleMapping.setRole(role);
+        roleMapping.setRoles(roleList);
         RoleMapping savedRoleMapping = roleMappingRepository.save(roleMapping);
 
-        Manager manager = new Manager();
-        manager.setRoleMapping(savedRoleMapping);
-        manager.setEmployees(employeeDTO
-                .getManager()
-                .getEmployees());
-        managerRepository.save(manager);
+//        List<Role> roleList = new ArrayList<>();
+//        for(var r : employeeDTO.getRoles()) {
+//           Role role= roleRepository.findById(r.getId())
+//                   .orElseThrow(()->new RuntimeException("role not found"));
+//           roleList.add(role);
+//        }
 
         Salary salary = new Salary();
         salary.setEmployee(savedEmployee);
-        salary.setSalary(employeeDTO.getSalary());
         salary.setYear(employeeDTO.getYear());
+        salary.setSalary(employeeDTO.getSalary());
         salaryRepository.save(salary);
+
+        Manager manager = new Manager();
+        manager.setRoleMapping(savedRoleMapping);
+        managerRepository.save(manager);
 
         return savedEmployee;
     }
 
     @Override
-    public EmployeeDTO getEmployee(Integer id) throws EmployeeNotFoundException {
+    public DetailsDTO getEmployee(Integer id) throws EmployeeNotFoundException {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
 
         Salary salary = salaryRepository.findByEmployeeId(employee.getId());
-        Manager manger = managerRepository.findByRoleMappingId(employee.getId());
+        Manager manager = managerRepository.findByRoleMappingId(employee.getId());
 
-        EmployeeDTO employeeDTO = new EmployeeDTO();
-        employeeDTO.setId(employee.getId());
-        employeeDTO.setName(employee.getName());
-        employeeDTO.setPhoneNumber(employee.getPhoneNumber());
-        employeeDTO.setJoiningDate(employee.getJoiningDate());
+        DetailsDTO detailsDTO = new DetailsDTO();
+        detailsDTO.setId(employee.getId());
+        detailsDTO.setName(employee.getName());
+        detailsDTO.setPhoneNumber(employee.getPhoneNumber());
+        detailsDTO.setJoiningDate(employee.getJoiningDate());
+        detailsDTO.setSalary(salary.getSalary());
+        detailsDTO.setRoles(manager.getRoleMapping().getRoles());
+        detailsDTO.setEmployees(manager.getEmployees());
 
-        employeeDTO.setYear(salary.getYear());
-        employeeDTO.setSalary(salary.getSalary());
-
-        employeeDTO.setManager(manger);
-        employeeDTO.setRoles(Set.of(manger.getRoleMapping().getRole()));
-
-        return employeeDTO;
+        return detailsDTO;
     }
 
     @Override
-    public void getEmployeeHierarchy(Integer id) throws EmployeeNotFoundException {
-        
+    public EmployeeHierarchyDTO getEmployeeHierarchy(Integer id) throws EmployeeNotFoundException {
+        RoleMapping roleMapping = roleMappingRepository.findByEmployeeId(id);
+
+        Employee employee = roleMapping.getEmployee();
+        Manager manager = managerRepository.findByEmployeesId(employee.getId());
+
+        Salary salary = salaryRepository.findByEmployeeId(employee.getId());
+        RoleMapping managerRoleMapping = roleMappingRepository.findByEmployeeId(employee.getId());
+
+        EmployeeHierarchyDTO employeeHierarchyDTO = new EmployeeHierarchyDTO();
+        employeeHierarchyDTO.setManagerId(employee.getId());
+        employeeHierarchyDTO.setManagerName(employee.getName());
+        employeeHierarchyDTO.setPhoneNumber(employee.getPhoneNumber());
+        employeeHierarchyDTO.setSalary(salary.getSalary());
+        employeeHierarchyDTO.setJoiningDate(employee.getJoiningDate());
+        employeeHierarchyDTO.setRoles(managerRoleMapping.getRoles());
+        employeeHierarchyDTO.setEmployees(manager.getEmployees());
+        return employeeHierarchyDTO;
     }
 
 }

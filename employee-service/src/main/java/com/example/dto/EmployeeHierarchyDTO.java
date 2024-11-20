@@ -1,5 +1,6 @@
 package com.example.dto;
 
+import com.example.entity.Employee;
 import com.example.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,14 +12,14 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmployeeDTO {
+public class EmployeeHierarchyDTO {
 
-    private Integer id;
-    private String name;
+    private Integer managerId;
+    private String managerName;
     private String phoneNumber;
     private double salary;
     private LocalDate joiningDate;
-    private int year;
     private List<Role> roles;
+    private List<Employee> employees;
 
 }

@@ -7,4 +7,6 @@ public interface ManagerRepository extends JpaRepository<Manager, Integer> {
 
     Manager findByRoleMappingId(Integer id);
 
+    Manager findByEmployeesId(Integer id);
+
 }
