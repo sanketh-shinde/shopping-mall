@@ -12,4 +12,15 @@ public interface StockService {
     void deleteStock(int id);
     List<Stock> addNewStock(List<Stock> stocks);
 
+    List<Stock> findStockByCategory(String category);
+
+    int getStockQuantity(int id);
+
+    List<Stock> bulkUpdateStockPrice(List<Stock> stocks);
+
+    List<Stock> findStockByPriceRange(double minPrice, double maxPrice);
+
+    Stock findStockByProductName(String dressName);
+
+    Stock updateQuantityAfterSell(int sellQuantity, int stockId);
 }

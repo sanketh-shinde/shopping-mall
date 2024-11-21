@@ -96,5 +96,51 @@ public class StockServiceImpl implements StockService {
         return stockRepository.findAll();
     }
 
+    @Override
+    public List<Stock> findStockByCategory(String category) {
+        Stock stock = stockRepository.findByCategory(category).orElseThrow(() ->
+                new StockNotFoundException("Stock Not Found with the given Category " + category));
+     return List.of(stock);
+    }
+
+    @Override
+    public int getStockQuantity(int id) {
+     return   stockRepository.getStockQuantity(id);
+
+
+    }
+
+    @Transactional
+    @Override
+    public List<Stock> bulkUpdateStockPrice(List<Stock> stocks) {
+        return stocks.stream()
+                .map(stock -> {
+                    Stock existingStock = stockRepository.findById(stock.getId())
+                            .orElseThrow(() -> new StockNotFoundException("Stock not found with ID: " + stock.getId()));
+                    existingStock.setPrice(stock.getPrice());
+                    return stockRepository.save(existingStock);
+                })
+                .toList();
+    }
+
+    @Override
+    public List<Stock> findStockByPriceRange(double minPrice, double maxPrice) {
+        return stockRepository.findStockByPriceRange(minPrice , maxPrice);
+    }
+
+    @Override
+    public Stock findStockByProductName(String productName) {
+        return stockRepository.findByProductName(productName);
+    }
+
+    @Transactional
+    @Override
+    public Stock updateQuantityAfterSell(int sellQuantity, int stockId) {
+        Stock stockById = findStockById(stockId);
+        int quantity = stockById.getQuantity();
+        stockById.setQuantity(quantity - sellQuantity);
+        return stockRepository.save(stockById);
+    }
+
 
 }

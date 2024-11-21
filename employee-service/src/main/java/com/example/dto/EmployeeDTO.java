@@ -6,17 +6,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmployeeDTO {
 
+    private Integer id;
     private String name;
     private String phoneNumber;
     private double salary;
     private LocalDate joiningDate;
-    private Set<Role> roles;
+    private int year;
+    private List<Role> roles;
 
 }

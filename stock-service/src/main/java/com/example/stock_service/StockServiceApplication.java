@@ -7,7 +7,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class StockServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(StockServiceApplication.class, args);
+	SpringApplication.run(StockServiceApplication.class, args);
+
 	}
 
 }
+
+
+
+
+

@@ -1,15 +1,15 @@
 package com.example.sales_service.entities;
 
-
 import com.example.sales_service.dto.Stock;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
@@ -20,13 +20,18 @@ public class Sales {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer salesId;
-
-    private Integer stockId;
-    @JsonIgnore
     private double salesAmount;
-    private LocalDate salesDate;
-    private Integer employeeId;
 
-    private List<String> sales;
+
+    @Column(nullable = false)
+    private LocalDateTime salesDate=LocalDateTime.now();
+
+    private Integer employeeId;
+    @Lob
+    private String stocks;
+
+
+
+
 
 }

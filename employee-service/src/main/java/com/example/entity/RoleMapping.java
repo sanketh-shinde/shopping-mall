@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -15,9 +17,9 @@ public class RoleMapping {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
+    @OneToMany
+    @JoinColumn(name = "role_mapping_id")
+    private List<Role> roles;
 
     @ManyToOne
     @JoinColumn(name = "employee_id")
