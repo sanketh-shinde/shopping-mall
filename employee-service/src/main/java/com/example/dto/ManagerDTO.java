@@ -13,6 +13,7 @@ import java.util.List;
 public class ManagerDTO {
 
     private Integer id;
+    private String name;
     private List<Employee> employees;
 
 }

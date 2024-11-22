@@ -2,7 +2,6 @@ package com.example.controller;
 
 import com.example.dto.DetailsDTO;
 import com.example.dto.EmployeeDTO;
-import com.example.dto.EmployeeHierarchyDTO;
 import com.example.entity.Employee;
 import com.example.exception.EmployeeNotFoundException;
 import com.example.response.ApiResponse;
@@ -11,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/employees")
@@ -42,8 +43,8 @@ public class EmployeeController {
     }
 
     @GetMapping("/hierarchy/{id}")
-    public EmployeeHierarchyDTO getHierarchy(@PathVariable Integer id) throws EmployeeNotFoundException {
-       return employeeService.getEmployeeHierarchy(id);
+    public List<Integer> getHierarchy(@PathVariable Integer id) throws EmployeeNotFoundException {
+       return employeeService.getEmployeeManagerHierarchy(id);
     }
 
 }

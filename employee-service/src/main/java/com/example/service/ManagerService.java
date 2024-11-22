@@ -6,6 +6,7 @@ import com.example.exception.EmployeeNotFoundException;
 
 public interface ManagerService {
 
-    ManagerDTO assignManager(Integer empId, Integer managerId, Manager manager) throws EmployeeNotFoundException;
+    ManagerDTO assignManager(Integer id, Manager manager)
+            throws EmployeeNotFoundException;
 
 }
