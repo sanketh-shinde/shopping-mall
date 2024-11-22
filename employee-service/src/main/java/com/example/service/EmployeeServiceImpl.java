@@ -126,20 +126,27 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (visited.contains(employeeId)) {
             throw new IllegalStateException("Circular dependency detected in employee hierarchy for Employee ID: " + employeeId);
         }
+
         visited.add(employeeId);
+
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee is not found with id " + employeeId));
+
         hierarchyList.add(employee.getId());
+
         List<Role> roles = roleMappingRepository.findByEmployeeId(employee.getId()).getRoles();
         log.info("Roles for Employee ID {}: {}", employeeId, roles);
+
         for (Role role : roles) {
             if (role.getDesignation().contains("Sales Supervisor")) {
                 log.info("Reached Sale Supervisor with ID: {}", employee.getId());
                 return;
             }
         }
+
         Manager manager = managerRepository.findByEmployeesId(employee.getId());
         log.info("Manager is : {}", manager);
+
         if (manager != null) {
             Manager byRoleMappingId = managerRepository.findByRoleMappingId(manager.getRoleMapping().getId());
             RoleMapping roleMapping = roleMappingRepository.findById(byRoleMappingId.getId())
