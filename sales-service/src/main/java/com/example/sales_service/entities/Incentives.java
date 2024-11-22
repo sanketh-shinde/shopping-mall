@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,11 +17,14 @@ public class Incentives {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Integer incentiveId;
+
+
         private Integer employeeId;
+
         @JsonIgnore
         private String incentiveMonthYear;
 
-        @OneToOne
+        @ManyToOne
         private Sales sales;
         @JsonIgnore
         private double incentiveAmount;

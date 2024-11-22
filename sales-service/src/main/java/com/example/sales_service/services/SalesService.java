@@ -5,12 +5,17 @@ import com.example.sales_service.dto.EmployeeDTO;
 import com.example.sales_service.dto.SalesDto;
 import com.example.sales_service.dto.Stock;
 import com.example.sales_service.entities.Sales;
+import com.example.sales_service.exception.EmployeeNotFoundException;
+import com.example.sales_service.exception.StockNotFoundException;
 import com.example.sales_service.repository.SalesRepo;
 import com.example.sales_service.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +31,7 @@ public class SalesService {
 
 
 
+    //For buying the products
     public Sales buySales(SalesDto salesDto) throws IOException {
 
 
@@ -40,12 +46,12 @@ public class SalesService {
 
                     for(Stock stock:stockList)
                     {
-                        System.out.println(stock);
-                        System.out.println("--------");
                         ApiResponse<Stock> stockApiResponse=stockApiResponse(stock.getId());
+                        if(stockApiResponse==null)
+                        {
+                            throw new StockNotFoundException("Stock with id "+stock.getId()+" is not found");
+                        }
                         Stock stock1=stockApiResponse.getData();
-                        System.out.println("stock1 "+stock1);
-
                         stock1.setQuantity(stock.getQuantity());
 
                         updateStockQuantity(stock1.getQuantity(),stock.getId());
@@ -62,7 +68,6 @@ public class SalesService {
                         salesDto.setSalesAmount(totalAmount);
 
                         Sales sales=new Sales();
-                        //sales.setSalesDate(salesDto.getSalesDate());
                         sales.setSalesAmount(salesDto.getSalesAmount());
                         sales.setStocks(salesDto.getStocks().toString());
                         sales.setEmployeeId(salesDto.getEmployeeId());
@@ -71,6 +76,7 @@ public class SalesService {
                         return salesRepo.save(sales);
     }
 
+    //Returns Stock object based on stockId
     public ApiResponse<Stock> stockApiResponse(int stockId)
     {
          return webclient.build()
@@ -82,6 +88,8 @@ public class SalesService {
                 .block();
     }
 
+
+    //To update the quantity column in the Stock entity
     public void updateStockQuantity(int sellQuantity,int stockId)
     {
         WebClient webClient = WebClient.builder()
@@ -101,8 +109,10 @@ public class SalesService {
     }
 
 
+    //Returns employee based on employeeId
     public ApiResponse<DetailsDTO> getEmployeeApiResponse(int employeeId)
     {
+
         return webclient.build()
                 .get()
                 .uri("http://192.168.2.78:8081/employees/get/{employeeId}",employeeId)
@@ -111,12 +121,4 @@ public class SalesService {
                 .block();
     }
 
-
-
-
-
 }
-
-
-
-//updateQuantityAfterSell
