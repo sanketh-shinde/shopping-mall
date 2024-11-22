@@ -60,7 +60,6 @@ public class IncentiveService {
              Sales sales =salesRepo.findByEmployeeId(incentives.getEmployeeId());
                double salesAmount=sales.getSalesAmount();
 
-
                if (roles.size() == 1) {
                    Incentives incentives2=new Incentives();
                    incentives2.setEmployeeId(data.getId());
@@ -71,10 +70,7 @@ public class IncentiveService {
                    incentives2.setIncentiveMonthYear(salesDate.getMonth()+"-" +salesDate.getYear());
                    list1.add(incentivesRepo.save(incentives2));
                }
-
-
-
-               else if (roles.size() == 2 && roles.contains("Floor Supervisor")) {
+               else if (roles.stream().anyMatch(role -> role.getDesignation().equals("Floor Supervisor"))) {
                    Incentives incentives3=new Incentives();
                    incentives3.setEmployeeId(data.getId());
                    incentives3.setIncentiveAmount(salesAmount*FLOOR_SUPERVISOR_INCENTIVE );
