@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.dto.DetailsDTO;
 import com.example.dto.EmployeeDTO;
+import com.example.dto.EmployeeHierarchyDTO;
 import com.example.entity.Employee;
 import com.example.exception.EmployeeNotFoundException;
 import com.example.response.ApiResponse;
@@ -43,8 +44,25 @@ public class EmployeeController {
     }
 
     @GetMapping("/hierarchy/{id}")
-    public List<Integer> getHierarchy(@PathVariable Integer id) throws EmployeeNotFoundException {
-       return employeeService.getEmployeeManagerHierarchy(id);
+    public ResponseEntity<ApiResponse<List<Integer>>> getEmployeeManagerHierarchy(
+            @PathVariable Integer id
+    ) throws EmployeeNotFoundException {
+        ApiResponse<List<Integer>> apiResponse = new ApiResponse<>(
+                HttpStatus.OK,
+                "Hierarchy Found",
+                employeeService.getEmployeeManagerHierarchy(id)
+        );
+       return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/hierarchy")
+    public ResponseEntity<ApiResponse<EmployeeHierarchyDTO>> getEmployeeHierarchy() throws EmployeeNotFoundException {
+        ApiResponse<EmployeeHierarchyDTO> apiResponse = new ApiResponse<>(
+                HttpStatus.OK,
+                "Hierarchy Found",
+                employeeService.getEmployeeHierarchy()
+        );
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
 }

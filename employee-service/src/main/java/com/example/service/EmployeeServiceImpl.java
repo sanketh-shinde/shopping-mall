@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Transactional
 @Service
@@ -90,25 +87,155 @@ public class EmployeeServiceImpl implements EmployeeService {
         return detailsDTO;
     }
 
+//    @Override
+//    public EmployeeHierarchyDTO getEmployeeHierarchy() throws EmployeeNotFoundException {
+//        Integer employeeId = 1;
+//        Employee employee = employeeRepository.findById(employeeId)
+//                .orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
+//
+//        // Fetch salary, role mapping, and manager details for the employee
+//        Salary salary = salaryRepository.findByEmployeeId(employee.getId());
+//        RoleMapping roleMapping = roleMappingRepository.findByEmployeeId(employee.getId());
+//        Manager manager = managerRepository.findByRoleMappingId(roleMapping.getId());
+//
+//        EmployeeHierarchyDTO employeeHierarchyDTO = new EmployeeHierarchyDTO();
+//        employeeHierarchyDTO.setManagerId(employee.getId());
+//        employeeHierarchyDTO.setManagerName(employee.getName());
+//        employeeHierarchyDTO.setPhoneNumber(employee.getPhoneNumber());
+//        employeeHierarchyDTO.setSalary(salary.getSalary());
+//        employeeHierarchyDTO.setJoiningDate(employee.getJoiningDate());
+//        employeeHierarchyDTO.setRoles(roleMapping.getRoles());
+//
+//        // Initialize the visited set to track circular references
+//        Set<Integer> visited = new HashSet<>();
+//
+//        // Build the hierarchy for the manager's employees
+//        if (manager != null && manager.getEmployees() != null) {
+//            employeeHierarchyDTO.setEmployees(buildHierarchy(manager.getEmployees(), visited));
+//        } else {
+//            employeeHierarchyDTO.setEmployees(Collections.emptyList()); // No subordinates
+//        }
+//
+//        return employeeHierarchyDTO;
+//    }
+//
+//    private List<EmployeeHierarchyDTO> buildHierarchy(
+//            List<Employee> employees,
+//            Set<Integer> visited
+//    ) throws EmployeeNotFoundException {
+//        List<EmployeeHierarchyDTO> result = new ArrayList<>();
+//
+//        // If the list of employees is empty, return immediately (no recursion needed)
+//        if (employees == null || employees.isEmpty()) {
+//            return result;
+//        }
+//
+//        for (Employee employee : employees) {
+//            // Prevent circular references by checking if the employee has already been visited
+//            if (visited.contains(employee.getId())) {
+//                continue; // Skip this employee, to avoid infinite recursion
+//            }
+//
+//            // Add the current employee to the visited set
+//            visited.add(employee.getId());
+//
+//            // Fetch the employee details
+//            Employee emp = employeeRepository.findById(employee.getId())
+//                    .orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
+//
+//            // Fetch salary, role mapping, and manager details
+//            Salary salary = salaryRepository.findByEmployeeId(emp.getId());
+//            RoleMapping roleMapping = roleMappingRepository.findByEmployeeId(emp.getId());
+//            Manager manager = managerRepository.findByRoleMappingId(roleMapping.getId());
+//
+//            // Create EmployeeHierarchyDTO for this employee
+//            EmployeeHierarchyDTO dto = new EmployeeHierarchyDTO();
+//            dto.setManagerId(emp.getId());
+//            dto.setManagerName(emp.getName());
+//            dto.setPhoneNumber(emp.getPhoneNumber());
+//            dto.setSalary(salary.getSalary());
+//            dto.setJoiningDate(emp.getJoiningDate());
+//            dto.setRoles(roleMapping.getRoles());
+//
+//            // Recursively build the employee hierarchy for subordinates
+//            if (manager != null && manager.getEmployees() != null && !manager.getEmployees().isEmpty()) {
+//                // Recursively build the hierarchy for the manager's employees
+//                dto.setEmployees(buildHierarchy(manager.getEmployees(), visited));
+//            } else {
+//                dto.setEmployees(Collections.emptyList());  // No subordinates, return empty list
+//            }
+//
+//            result.add(dto);
+//        }
+//
+//        return result;
+//    }
+
     @Override
-    public EmployeeHierarchyDTO getEmployeeHierarchy(Integer id) throws EmployeeNotFoundException {
-        RoleMapping roleMapping = roleMappingRepository.findByEmployeeId(id);
+    public EmployeeHierarchyDTO getEmployeeHierarchy() throws EmployeeNotFoundException {
+        Integer employeeId = 1; // Dynamic employee ID
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
 
-        Employee employee = roleMapping.getEmployee();
-        Manager manager = managerRepository.findByEmployeesId(employee.getId());
+        // Fetch the relevant details for the employee
+        EmployeeHierarchyDTO employeeHierarchyDTO = createEmployeeHierarchyDTO(employee);
 
-        Salary salary = salaryRepository.findByEmployeeId(employee.getId());
-        RoleMapping managerRoleMapping = roleMappingRepository.findByEmployeeId(employee.getId());
+        // Initialize visited set to track circular references
+        Set<Integer> visited = new HashSet<>();
 
-        EmployeeHierarchyDTO employeeHierarchyDTO = new EmployeeHierarchyDTO();
-        employeeHierarchyDTO.setManagerId(employee.getId());
-        employeeHierarchyDTO.setManagerName(employee.getName());
-        employeeHierarchyDTO.setPhoneNumber(employee.getPhoneNumber());
-        employeeHierarchyDTO.setSalary(salary.getSalary());
-        employeeHierarchyDTO.setJoiningDate(employee.getJoiningDate());
-        employeeHierarchyDTO.setRoles(managerRoleMapping.getRoles());
-        employeeHierarchyDTO.setEmployees(manager.getEmployees());
+        // Build the hierarchy for the manager's employees
+        RoleMapping roleMapping = roleMappingRepository.findByEmployeeId(employee.getId());
+        Manager manager = managerRepository.findByRoleMappingId(roleMapping.getId());
+        if (manager != null) {
+            employeeHierarchyDTO.setEmployees(buildHierarchy(manager.getEmployees(), visited));
+        } else {
+            employeeHierarchyDTO.setEmployees(Collections.emptyList()); // No subordinates
+        }
         return employeeHierarchyDTO;
+    }
+
+    private EmployeeHierarchyDTO createEmployeeHierarchyDTO(Employee employee) {
+        Salary salary = salaryRepository.findByEmployeeId(employee.getId());
+        RoleMapping roleMapping = roleMappingRepository.findByEmployeeId(employee.getId());
+
+        EmployeeHierarchyDTO dto = new EmployeeHierarchyDTO();
+        dto.setManagerId(employee.getId());
+        dto.setManagerName(employee.getName());
+        dto.setPhoneNumber(employee.getPhoneNumber());
+        dto.setSalary(salary.getSalary());
+        dto.setJoiningDate(employee.getJoiningDate());
+        dto.setRoles(roleMapping.getRoles());
+        return dto;
+    }
+
+    private List<EmployeeHierarchyDTO> buildHierarchy(List<Employee> employees, Set<Integer> visited) {
+        List<EmployeeHierarchyDTO> result = new ArrayList<>();
+
+        for (Employee employee : employees) {
+            // Prevent circular references by checking if the employee has already been visited
+            if (visited.contains(employee.getId())) {
+                continue; // Skip this employee
+            }
+
+            // Add the current employee to the visited set
+            visited.add(employee.getId());
+
+            // Fetch employee details and create the DTO
+            EmployeeHierarchyDTO dto = createEmployeeHierarchyDTO(employee);
+
+            // Recursively build the hierarchy for subordinates
+            RoleMapping roleMapping = roleMappingRepository.findByEmployeeId(employee.getId());
+            Manager manager = managerRepository.findByRoleMappingId(roleMapping.getId());
+
+            if (manager != null && manager.getEmployees() != null && !manager.getEmployees().isEmpty()) {
+                dto.setEmployees(buildHierarchy(manager.getEmployees(), visited)); // Recursive call
+            } else {
+                dto.setEmployees(Collections.emptyList()); // No subordinates
+            }
+
+            result.add(dto);
+        }
+        return result;
     }
 
     @Override
@@ -120,17 +247,25 @@ public class EmployeeServiceImpl implements EmployeeService {
         return hierarchyList;
     }
 
-    private void fetchEmployeeHierarchy(Integer employeeId, List<Integer> hierarchyList, Set<Integer> visited)
+    private void fetchEmployeeHierarchy(
+            Integer employeeId,
+            List<Integer> hierarchyList,
+            Set<Integer> visited
+    )
             throws EmployeeNotFoundException {
 
         if (visited.contains(employeeId)) {
-            throw new IllegalStateException("Circular dependency detected in employee hierarchy for Employee ID: " + employeeId);
+            throw new IllegalStateException(
+                    "Circular dependency detected in employee hierarchy for Employee ID: " + employeeId
+            );
         }
 
         visited.add(employeeId);
 
         Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new EmployeeNotFoundException("Employee is not found with id " + employeeId));
+                .orElseThrow(() -> new EmployeeNotFoundException(
+                        "Employee is not found with id " + employeeId)
+                );
 
         hierarchyList.add(employee.getId());
 
