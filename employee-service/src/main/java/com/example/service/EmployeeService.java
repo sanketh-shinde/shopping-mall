@@ -6,9 +6,13 @@ import com.example.dto.EmployeeHierarchyDTO;
 import com.example.entity.Employee;
 import com.example.exception.EmployeeNotFoundException;
 
+import java.util.List;
+
 public interface EmployeeService {
 
     Employee createEmployee(EmployeeDTO employeeDTO) throws EmployeeNotFoundException;
     DetailsDTO getEmployee(Integer id) throws EmployeeNotFoundException;
     EmployeeHierarchyDTO getEmployeeHierarchy(Integer id) throws EmployeeNotFoundException;
+    List<Integer> getEmployeeManagerHierarchy(Integer id) throws EmployeeNotFoundException;
+
 }

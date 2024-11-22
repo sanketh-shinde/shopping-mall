@@ -6,14 +6,19 @@ import com.example.dto.EmployeeHierarchyDTO;
 import com.example.entity.*;
 import com.example.exception.EmployeeNotFoundException;
 import com.example.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Transactional
 @Service
+@Slf4j
 public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
@@ -50,14 +55,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         roleMapping.setEmployee(foundEmployee);
         roleMapping.setRoles(roleList);
         RoleMapping savedRoleMapping = roleMappingRepository.save(roleMapping);
-
-//        List<Role> roleList = new ArrayList<>();
-//        for(var r : employeeDTO.getRoles()) {
-//           Role role= roleRepository.findById(r.getId())
-//                   .orElseThrow(()->new RuntimeException("role not found"));
-//           roleList.add(role);
-//        }
-
+        
         Salary salary = new Salary();
         salary.setEmployee(savedEmployee);
         salary.setYear(employeeDTO.getYear());
@@ -77,7 +75,8 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
 
         Salary salary = salaryRepository.findByEmployeeId(employee.getId());
-        Manager manager = managerRepository.findByRoleMappingId(employee.getId());
+        RoleMapping roleMapping = roleMappingRepository.findByEmployeeId(employee.getId());
+        Manager manager = managerRepository.findByRoleMappingId(roleMapping.getId());
 
         DetailsDTO detailsDTO = new DetailsDTO();
         detailsDTO.setId(employee.getId());
@@ -110,6 +109,52 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeHierarchyDTO.setRoles(managerRoleMapping.getRoles());
         employeeHierarchyDTO.setEmployees(manager.getEmployees());
         return employeeHierarchyDTO;
+    }
+
+    @Override
+    public List<Integer> getEmployeeManagerHierarchy(Integer id) throws EmployeeNotFoundException {
+        Set<Integer> visited = new HashSet<>();
+        List<Integer> hierarchyList = new ArrayList<>();
+        fetchEmployeeHierarchy(id, hierarchyList, visited);
+        log.info("Final Hierarchy List: {}", hierarchyList);
+        return hierarchyList;
+    }
+
+    private void fetchEmployeeHierarchy(Integer employeeId, List<Integer> hierarchyList, Set<Integer> visited)
+            throws EmployeeNotFoundException {
+
+        if (visited.contains(employeeId)) {
+            throw new IllegalStateException("Circular dependency detected in employee hierarchy for Employee ID: " + employeeId);
+        }
+
+        visited.add(employeeId);
+
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee is not found with id " + employeeId));
+
+        hierarchyList.add(employee.getId());
+
+        List<Role> roles = roleMappingRepository.findByEmployeeId(employee.getId()).getRoles();
+        log.info("Roles for Employee ID {}: {}", employeeId, roles);
+
+        for (Role role : roles) {
+            if (role.getDesignation().contains("Sales Supervisor")) {
+                log.info("Reached Sale Supervisor with ID: {}", employee.getId());
+                return;
+            }
+        }
+
+        Manager manager = managerRepository.findByEmployeesId(employee.getId());
+        log.info("Manager is : {}", manager);
+
+        if (manager != null) {
+            Manager byRoleMappingId = managerRepository.findByRoleMappingId(manager.getRoleMapping().getId());
+            RoleMapping roleMapping = roleMappingRepository.findById(byRoleMappingId.getId())
+                    .orElseThrow(() -> new RuntimeException("role mapping not found"));
+            fetchEmployeeHierarchy(roleMapping.getEmployee().getId(), hierarchyList, visited);
+        } else {
+            log.warn("No manager found for Employee ID: {}", employeeId);
+        }
     }
 
 }

@@ -17,16 +17,15 @@ public class ManagerController {
     @Autowired
     private ManagerService managerService;
 
-    @PutMapping("/assignManager")
+    @PutMapping("/assignManager/{id}")
     public ResponseEntity<ApiResponse<ManagerDTO>> assignManager(
-            @RequestParam Integer empId,
-            @RequestParam Integer managerId,
+            @PathVariable Integer id,
             @RequestBody Manager manager
     ) throws EmployeeNotFoundException {
         ApiResponse<ManagerDTO> apiResponse = new ApiResponse<>(
                 HttpStatus.OK,
                 "manager assigned successfully",
-                managerService.assignManager(empId, managerId, manager)
+                managerService.assignManager(id, manager)
         );
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
