@@ -12,4 +12,6 @@ public class Salary {
     private Integer id;
     private int year;
     private double salary;
+    private Employee employee;
+
 }

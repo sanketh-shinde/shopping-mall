@@ -15,16 +15,12 @@ public class Incentives {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Integer incentiveId;
-
         private Integer employeeId;
-
         @JsonIgnore
         private String incentiveMonthYear;
 
         @OneToOne
         private Sales sales;
-
-
         @JsonIgnore
         private double incentiveAmount;
         @JsonIgnore

@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class IncentiveController {
 
 
-    @Autowired
-    private IncentiveService incentiveService;
-
-    @PostMapping("/addIncentive")
-    public ResponseEntity<Incentives> addIncentives(@RequestBody Incentives incentives)
-    {
-         return ResponseEntity.ok(incentiveService.addIncentives(incentives));
-    }
+//    @Autowired
+//    private IncentiveService incentiveService;
+//
+//    @PostMapping("/addIncentive")
+//    public ResponseEntity<Incentives> addIncentives(@RequestBody Incentives incentives)
+//    {
+//         return ResponseEntity.ok(incentiveService.addIncentives(incentives));
+//    }
 }

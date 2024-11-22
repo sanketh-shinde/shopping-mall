@@ -1,20 +1,19 @@
 package com.example.sales_service.dto;
-
-
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Stock {
+public class Stock implements Serializable {
 
-            private Integer id;
-            private String category;
-            private String dressName;
-            private int quantity;
-            private double price;
+    private int id;
+    private String category;
+    private String productName ;
+    private int quantity;
+    private double price;
+
 }

@@ -9,7 +9,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalException {
 
     @ExceptionHandler(StockNotFoundException.class)
-    public ResponseEntity<String> buyerNotFoundException(StockNotFoundException exception)
+    public ResponseEntity<String> stockNotFoundException(StockNotFoundException exception)
+    {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+    }
+
+
+    @ExceptionHandler(EmployeeNotFoundException.class)
+    public ResponseEntity<String>  employeeNoFoundException(EmployeeNotFoundException exception)
     {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }

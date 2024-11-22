@@ -13,6 +13,6 @@ public class Manager {
 
     private Integer id;
     private RoleMapping roleMapping;
-    //private List<Employee> employees;
+    private List<Employee> employees;
 
 }
