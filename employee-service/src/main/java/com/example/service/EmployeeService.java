@@ -12,7 +12,7 @@ public interface EmployeeService {
 
     Employee createEmployee(EmployeeDTO employeeDTO) throws EmployeeNotFoundException;
     DetailsDTO getEmployee(Integer id) throws EmployeeNotFoundException;
-    EmployeeHierarchyDTO getEmployeeHierarchy(Integer id) throws EmployeeNotFoundException;
+    EmployeeHierarchyDTO getEmployeeHierarchy() throws EmployeeNotFoundException;
     List<Integer> getEmployeeManagerHierarchy(Integer id) throws EmployeeNotFoundException;
 
 }

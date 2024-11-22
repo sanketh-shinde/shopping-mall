@@ -1,6 +1,5 @@
 package com.example.dto;
 
-import com.example.entity.Employee;
 import com.example.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,6 +19,6 @@ public class EmployeeHierarchyDTO {
     private double salary;
     private LocalDate joiningDate;
     private List<Role> roles;
-    private List<Employee> employees;
+    private List<EmployeeHierarchyDTO> employees;
 
 }
