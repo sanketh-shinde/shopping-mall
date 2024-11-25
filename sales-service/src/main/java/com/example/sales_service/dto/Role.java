@@ -11,5 +11,6 @@ public class Role {
 
     private Integer id;
     private String designation;
+    private String role;
 
 }

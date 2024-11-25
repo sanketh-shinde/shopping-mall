@@ -70,7 +70,7 @@ public class IncentiveService {
                    incentives2.setIncentiveMonthYear(salesDate.getMonth()+"-" +salesDate.getYear());
                    list1.add(incentivesRepo.save(incentives2));
                }
-               else if (roles.stream().anyMatch(role -> role.getDesignation().equals("ROLE_FLOOR_SUPERVISOR"))) {
+               else if (roles.stream().anyMatch(role -> role.getRole().equals("ROLE_FLOOR_SUPERVISOR"))) {
                    Incentives incentives3=new Incentives();
                    incentives3.setEmployeeId(data.getId());
                    incentives3.setIncentiveAmount(salesAmount*FLOOR_SUPERVISOR_INCENTIVE );

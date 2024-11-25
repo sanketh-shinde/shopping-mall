@@ -14,6 +14,7 @@ public class Employee {
     private Integer id;
     private String name;
     private String phoneNumber;
+    private String password;
     private LocalDate joiningDate;
 
 }
