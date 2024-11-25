@@ -19,7 +19,7 @@ public class SalaryServiceImpl implements SalaryService {
     private SalaryRepository salaryRepository;
     @Value("${percentageHike}")
     private int percentageHike;
-    
+
     @Override
     @Scheduled(cron = "0 0 0 1 1 ?") //exact 12 am in new year salary will increment
     public List<Salary> incrementSalaryAll() {

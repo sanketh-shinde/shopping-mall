@@ -87,93 +87,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         return detailsDTO;
     }
 
-//    @Override
-//    public EmployeeHierarchyDTO getEmployeeHierarchy() throws EmployeeNotFoundException {
-//        Integer employeeId = 1;
-//        Employee employee = employeeRepository.findById(employeeId)
-//                .orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
-//
-//        // Fetch salary, role mapping, and manager details for the employee
-//        Salary salary = salaryRepository.findByEmployeeId(employee.getId());
-//        RoleMapping roleMapping = roleMappingRepository.findByEmployeeId(employee.getId());
-//        Manager manager = managerRepository.findByRoleMappingId(roleMapping.getId());
-//
-//        EmployeeHierarchyDTO employeeHierarchyDTO = new EmployeeHierarchyDTO();
-//        employeeHierarchyDTO.setManagerId(employee.getId());
-//        employeeHierarchyDTO.setManagerName(employee.getName());
-//        employeeHierarchyDTO.setPhoneNumber(employee.getPhoneNumber());
-//        employeeHierarchyDTO.setSalary(salary.getSalary());
-//        employeeHierarchyDTO.setJoiningDate(employee.getJoiningDate());
-//        employeeHierarchyDTO.setRoles(roleMapping.getRoles());
-//
-//        // Initialize the visited set to track circular references
-//        Set<Integer> visited = new HashSet<>();
-//
-//        // Build the hierarchy for the manager's employees
-//        if (manager != null && manager.getEmployees() != null) {
-//            employeeHierarchyDTO.setEmployees(buildHierarchy(manager.getEmployees(), visited));
-//        } else {
-//            employeeHierarchyDTO.setEmployees(Collections.emptyList()); // No subordinates
-//        }
-//
-//        return employeeHierarchyDTO;
-//    }
-//
-//    private List<EmployeeHierarchyDTO> buildHierarchy(
-//            List<Employee> employees,
-//            Set<Integer> visited
-//    ) throws EmployeeNotFoundException {
-//        List<EmployeeHierarchyDTO> result = new ArrayList<>();
-//
-//        // If the list of employees is empty, return immediately (no recursion needed)
-//        if (employees == null || employees.isEmpty()) {
-//            return result;
-//        }
-//
-//        for (Employee employee : employees) {
-//            // Prevent circular references by checking if the employee has already been visited
-//            if (visited.contains(employee.getId())) {
-//                continue; // Skip this employee, to avoid infinite recursion
-//            }
-//
-//            // Add the current employee to the visited set
-//            visited.add(employee.getId());
-//
-//            // Fetch the employee details
-//            Employee emp = employeeRepository.findById(employee.getId())
-//                    .orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
-//
-//            // Fetch salary, role mapping, and manager details
-//            Salary salary = salaryRepository.findByEmployeeId(emp.getId());
-//            RoleMapping roleMapping = roleMappingRepository.findByEmployeeId(emp.getId());
-//            Manager manager = managerRepository.findByRoleMappingId(roleMapping.getId());
-//
-//            // Create EmployeeHierarchyDTO for this employee
-//            EmployeeHierarchyDTO dto = new EmployeeHierarchyDTO();
-//            dto.setManagerId(emp.getId());
-//            dto.setManagerName(emp.getName());
-//            dto.setPhoneNumber(emp.getPhoneNumber());
-//            dto.setSalary(salary.getSalary());
-//            dto.setJoiningDate(emp.getJoiningDate());
-//            dto.setRoles(roleMapping.getRoles());
-//
-//            // Recursively build the employee hierarchy for subordinates
-//            if (manager != null && manager.getEmployees() != null && !manager.getEmployees().isEmpty()) {
-//                // Recursively build the hierarchy for the manager's employees
-//                dto.setEmployees(buildHierarchy(manager.getEmployees(), visited));
-//            } else {
-//                dto.setEmployees(Collections.emptyList());  // No subordinates, return empty list
-//            }
-//
-//            result.add(dto);
-//        }
-//
-//        return result;
-//    }
+
 
     @Override
     public EmployeeHierarchyDTO getEmployeeHierarchy() throws EmployeeNotFoundException {
-        Integer employeeId = 1; // Dynamic employee ID
+        Integer employeeId = 1;
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
 
