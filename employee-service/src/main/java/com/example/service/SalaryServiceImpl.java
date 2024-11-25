@@ -18,7 +18,7 @@ public class SalaryServiceImpl implements SalaryService {
     private SalaryRepository salaryRepository;
 
     @Override
-    @Scheduled(cron = "0 37 16 * * ?")
+    @Scheduled(cron = "0 0 0 1 1 ?")
     public List<Salary> incrementSalaryAll() {
         List<Salary> salaryList = salaryRepository.findAll();
         List<Salary> newSalaryList = new ArrayList<>();

@@ -1,8 +1,10 @@
 package com.example.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +15,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "employees")
 public class Employee {
 
     @Id
@@ -22,6 +25,9 @@ public class Employee {
 
     @Column(unique = true)
     private String phoneNumber;
+
+    @JsonIgnore
+    private String password;
 
     private LocalDate joiningDate;
 

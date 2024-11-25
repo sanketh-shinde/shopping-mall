@@ -7,6 +7,7 @@ import java.util.List;
 public interface SalaryService {
 
     List<Salary> incrementSalaryAll();
+
     Salary incrementSalary(Integer id,Salary salary);
 
 }

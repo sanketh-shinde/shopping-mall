@@ -10,6 +10,7 @@ import com.example.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<Employee>> createEmployee(@RequestBody EmployeeDTO employeeDTO)
             throws EmployeeNotFoundException {
         ApiResponse<Employee> apiResponse = new ApiResponse<>(
@@ -33,6 +35,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/get/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<DetailsDTO>> getEmployee(@PathVariable Integer id)
             throws EmployeeNotFoundException {
         ApiResponse<DetailsDTO> apiResponse = new ApiResponse<>(
