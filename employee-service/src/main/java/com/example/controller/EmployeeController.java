@@ -35,7 +35,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/get/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_ADMIN', 'ROLE_ACCOUNTANT')")
     public ResponseEntity<ApiResponse<DetailsDTO>> getEmployee(@PathVariable Integer id)
             throws EmployeeNotFoundException {
         ApiResponse<DetailsDTO> apiResponse = new ApiResponse<>(
