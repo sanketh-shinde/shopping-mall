@@ -1,77 +1,7 @@
-//package com.example.stock_service.exception.globalExceptionHandle;
-//import com.example.stock_service.exception.StockNotFoundException;
-//import com.example.stock_service.util.ApiResponse;
-//import org.springframework.http.HttpStatus;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.MethodArgumentNotValidException;
-//import org.springframework.web.bind.annotation.ExceptionHandler;
-//import org.springframework.web.bind.annotation.ResponseStatus;
-//import org.springframework.web.bind.annotation.RestControllerAdvice;
-//import org.springframework.web.context.request.WebRequest;
-//
-//import java.util.HashMap;
-//import java.util.Map;
-//
-//@RestControllerAdvice
-//public class GlobalExceptionHandler {
-//
-//    //Handle Stock
-//    @ExceptionHandler(StockNotFoundException.class)
-//    @ResponseStatus(HttpStatus.NOT_FOUND)
-//    public ResponseEntity<?> stockNotFoundException(StockNotFoundException ex){
-//        ErrorDetails errorDetails = new ErrorDetails(
-//                HttpStatus.NOT_FOUND.value(),
-//                ex.getMessage()
-//
-//        );
-//        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
-//
-//    }
-//
-//    // Generic exception handler for all other exceptions
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ErrorDetails> handleGenericException(Exception ex) {
-//
-//        ErrorDetails errorDetails = new ErrorDetails(
-//                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-//                "An unexpected error occurred: " + ex.getMessage()
-//
-//        );
-//        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
-//
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ResponseEntity<ApiResponse<Object>> handleValidationException(MethodArgumentNotValidException ex) {
-//        Map<String, String> fieldErrors = new HashMap<>();
-//        ex.getBindingResult().getFieldErrors().forEach(error ->
-//                fieldErrors.put(error.getField(), error.getDefaultMessage())
-//        );
-//
-//        ApiResponse<Object> response = new ApiResponse<>(
-//                "ERROR",
-//                "Validation failed",
-//                null,
-//                Map.of("fieldErrors", fieldErrors)
-//        );
-//
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-//    }
-//
-//    @ExceptionHandler(RuntimeException.class)
-//    public ResponseEntity<ApiResponse<Object>> handleGenericException(RuntimeException ex) {
-//        ApiResponse<Object> response = new ApiResponse<>(
-//                "ERROR",
-//                ex.getMessage(),
-//                null,
-//                Map.of("error","error")
-//        );
-//
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-//    }
-//}
 
 package com.example.stock_service.exception.globalExceptionHandle;
 
+import com.example.stock_service.exception.InsufficientStockException;
 import com.example.stock_service.exception.StockNotFoundException;
 import com.example.stock_service.util.ApiResponse;
 import org.springframework.http.HttpStatus;
@@ -139,5 +69,16 @@ public class GlobalExceptionHandler {
 
         );
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(InsufficientStockException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ApiResponse<Object>> handleInsufficientStockException(InsufficientStockException ex) {
+        ApiResponse<Object> response = new ApiResponse<>(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                null
+        );
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
