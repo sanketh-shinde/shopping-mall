@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class IncentiveDto {
 
-
     private Integer employeeId;
     private SalesDto salesDto;
+
 }

@@ -23,6 +23,7 @@ public class IncentiveController {
     @PostMapping("/addIncentive")
     public ResponseEntity<List<Incentives>> addIncentives(@RequestBody IncentiveDto incentives)
     {
+
          return ResponseEntity.ok(incentiveService.addIncentives(incentives));
     }
 }

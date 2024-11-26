@@ -35,6 +35,8 @@ public class IncentiveService {
     @Autowired
     private SalesRepo salesRepo;
 
+
+
     public List<Incentives> addIncentives(IncentiveDto incentives)
     {
         Incentives incentives1=new Incentives();
@@ -44,7 +46,6 @@ public class IncentiveService {
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ApiResponse<ArrayList<Integer>>>() {
                 }).block();
-
 
         List<Incentives>list1=new ArrayList<>();
 
@@ -72,9 +73,7 @@ public class IncentiveService {
                    list1.add(incentivesRepo.save(incentives2));
                }
 
-
-
-               else if (roles.size() == 2 && roles.contains("Floor Supervisor")) {
+               else if (roles.stream().anyMatch(role -> role.getRole().equals("ROLE_FLOOR_SUPERVISOR"))) {
                    Incentives incentives3=new Incentives();
                    incentives3.setEmployeeId(data.getId());
                    incentives3.setIncentiveAmount(salesAmount*FLOOR_SUPERVISOR_INCENTIVE );
@@ -84,7 +83,6 @@ public class IncentiveService {
                    incentives3.setIncentiveMonthYear(salesDate.getMonth()+"-" +salesDate.getYear());
                    list1.add(incentivesRepo.save(incentivesRepo.save(incentives3)));
                }
-
 
                else  {
                    Incentives incentives4 = new Incentives();

@@ -15,6 +15,7 @@ public class EmployeeDTO {
     private Integer id;
     private String name;
     private String phoneNumber;
+    private String password;
     private double salary;
     private LocalDate joiningDate;
     private int year;

@@ -13,13 +13,10 @@ import java.util.List;
 @Data
 public class SalesDto {
 
-
     private Integer salesId;
     private double salesAmount;
     private LocalDateTime salesDate;
     private Integer employeeId;
-
-
     private List<Stock> stocks;
 
 }
