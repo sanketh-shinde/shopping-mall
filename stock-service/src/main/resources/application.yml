@@ -5,7 +5,7 @@ spring:
   application:
     name: stock-service
   datasource:
-      url: jdbc:mysql://192.168.3.2:3306/shopping_mall_db
+      url: jdbc:mysql://192.168.2.249:3306/shopping_mall_db
       username: pawan
       password: pawan
       driver-class-name: com.mysql.cj.jdbc.Driver

@@ -1,6 +1,7 @@
 package com.example.stock_service.service;
 
 import com.example.stock_service.entity.Stock;
+import com.example.stock_service.exception.InsufficientStockException;
 import com.example.stock_service.exception.StockNotFoundException;
 import com.example.stock_service.repository.StockRepository;
 import jakarta.transaction.Transactional;
@@ -136,9 +137,14 @@ public class StockServiceImpl implements StockService {
     @Transactional
     @Override
     public Stock updateQuantityAfterSell(int sellQuantity, int stockId) {
+
         Stock stockById = findStockById(stockId);
         int quantity = stockById.getQuantity();
+        if(sellQuantity > quantity) {
+            throw new InsufficientStockException("Insufficient Stock");
+        }
         stockById.setQuantity(quantity - sellQuantity);
+        log.info("quantity after sell :{}",stockById.getQuantity());
         return stockRepository.save(stockById);
     }
 
