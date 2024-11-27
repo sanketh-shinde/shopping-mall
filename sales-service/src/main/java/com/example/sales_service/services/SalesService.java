@@ -1,21 +1,18 @@
 package com.example.sales_service.services;
 
 import com.example.sales_service.dto.DetailsDTO;
-import com.example.sales_service.dto.EmployeeDTO;
 import com.example.sales_service.dto.SalesDto;
 import com.example.sales_service.dto.Stock;
 import com.example.sales_service.entities.Sales;
-import com.example.sales_service.exception.EmployeeNotFoundException;
+import com.example.sales_service.exception.InsufficientStockException;
 import com.example.sales_service.exception.StockNotFoundException;
 import com.example.sales_service.repository.SalesRepo;
 import com.example.sales_service.response.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,18 +41,21 @@ public class SalesService {
         List<Stock>stockList =salesDto.getStocks();
         List<Stock>list=new ArrayList<>();
 
-        for(Stock stock:stockList)
+        for(Stock stock : stockList)
         {
             ApiResponse<Stock> stockApiResponse=stockApiResponse(stock.getId());
             if(stockApiResponse==null)
             {
-                throw new StockNotFoundException("Stock with id "+stock.getId()+" is not found");
+                throw new StockNotFoundException("Stock with id " + stock.getId() + " is not found");
             }
             Stock stock1=stockApiResponse.getData();
-            stock1.setQuantity(stock.getQuantity());
-
-            updateStockQuantity(stock1.getQuantity(),stock.getId());
-
+            String s=updateStockQuantity(stock.getId(),stock.getQuantity());
+            System.out.println(s);
+            if(s.contains("BAD_REQUEST"))
+            {
+                throw new InsufficientStockException("Insufficient stock Exception \nRequested quantity: "
+                        +stock1.getQuantity() +"\navailable quantity: "+stock.getQuantity());
+            }
             list.add(stock1);
         }
         salesDto.setStocks(list);
@@ -65,12 +65,10 @@ public class SalesService {
             totalAmount=totalAmount+(stock.getPrice()*stock.getQuantity());
         }
         salesDto.setSalesAmount(totalAmount);
-
         Sales sales=new Sales();
         sales.setSalesAmount(salesDto.getSalesAmount());
         sales.setStocks(salesDto.getStocks().toString());
         sales.setEmployeeId(salesDto.getEmployeeId());
-
         return salesRepo.save(sales);
     }
 
@@ -87,22 +85,32 @@ public class SalesService {
 
 
     //To update the quantity column in the Stock entity
-    public void updateStockQuantity(int sellQuantity,int stockId)
+    public String updateStockQuantity(int sellQuantity, int stockId)
     {
         WebClient webClient = WebClient.builder()
                 .baseUrl("http://192.168.2.86:8082")
                 .build();
 
-          webClient
+        String block = webClient
                 .put()
                 .uri(uriBuilder -> uriBuilder
                         .path("/api/stocks/updateQuantityAfterSell")  // Only the path now
                         .queryParam("sellQuantity", sellQuantity)
                         .queryParam("stockId", stockId)
                         .build())
-                .retrieve()
-                .bodyToMono(Stock.class)
+                .exchange()
+                .flatMap(clientResponse -> {
+                    if (clientResponse.statusCode().is4xxClientError()) {
+                        clientResponse.body((clientHttpResponse, context) ->
+                        {
+                            return clientHttpResponse.getBody();
+                        });
+                        return clientResponse.bodyToMono(String.class);
+                    }
+                    return clientResponse.bodyToMono(String.class);
+                })
                 .block();
+        return block;
     }
 
 

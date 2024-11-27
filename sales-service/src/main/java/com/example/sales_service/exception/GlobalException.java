@@ -11,13 +11,19 @@ public class GlobalException {
     @ExceptionHandler(StockNotFoundException.class)
     public ResponseEntity<String> stockNotFoundException(StockNotFoundException exception)
     {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
 
     @ExceptionHandler(EmployeeNotFoundException.class)
     public ResponseEntity<String>  employeeNoFoundException(EmployeeNotFoundException exception)
     {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<String> insufficientStockException(InsufficientStockException exception)
+    {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 }
