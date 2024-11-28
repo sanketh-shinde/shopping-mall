@@ -92,7 +92,28 @@ public class EmployeeServiceImpl implements EmployeeService {
         Salary salary = new Salary();
         salary.setEmployee(savedEmployee);
         salary.setYear(employeeDTO.getYear());
-        salary.setSalary(employeeDTO.getSalary());
+        switch (roleList.get(0).getDesignation()) {
+            case "Owner":
+                salary.setSalary(70000);
+                break;
+            case "Admin":
+                salary.setSalary(65000);
+                break;
+            case "Accountant":
+                salary.setSalary(55000);
+                break;
+            case "Sales Supervisor":
+                salary.setSalary(45000);
+                break;
+            case "Floor Supervisor":
+                salary.setSalary(35000);
+                break;
+            case "Employee":
+                salary.setSalary(25000);
+                break;
+            default:
+                break;
+        }
         salaryRepository.save(salary);
 
         Manager manager = new Manager();
