@@ -40,7 +40,8 @@ public class SecurityConfig {
                         request.requestMatchers(
                                 "/auth/login",
                                         "/employees/hierarchy/{id}",
-                                        "/employees/hierarchy")
+                                        "/employees/hierarchy",
+                                        "/managers")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())
