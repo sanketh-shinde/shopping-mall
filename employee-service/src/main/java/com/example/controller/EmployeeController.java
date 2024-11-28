@@ -22,7 +22,7 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    @PostMapping("/create")
+    @PostMapping("/register")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<Employee>> createEmployee(@RequestBody EmployeeDTO employeeDTO)
             throws EmployeeNotFoundException {
@@ -34,7 +34,7 @@ public class EmployeeController {
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_ADMIN', 'ROLE_ACCOUNTANT')")
     public ResponseEntity<ApiResponse<DetailsDTO>> getEmployee(@PathVariable Integer id)
             throws EmployeeNotFoundException {
