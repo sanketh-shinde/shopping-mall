@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/salary")
+@CrossOrigin("*")
 public class SalaryController {
 
     @Autowired
