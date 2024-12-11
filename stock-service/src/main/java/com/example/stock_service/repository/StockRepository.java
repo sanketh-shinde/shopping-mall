@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface StockRepository extends JpaRepository<Stock, Integer> {
 
-    Optional<Stock> findByCategory(String category);
+    Optional<List<Stock>> findByCategory(String category);
 
     // Custom query to get stock quantity by id
     @Query("select s.quantity from Stock s where s.id = :id")
