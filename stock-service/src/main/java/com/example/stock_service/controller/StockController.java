@@ -5,16 +5,17 @@ import com.example.stock_service.service.StockService;
 import com.example.stock_service.util.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/stocks")
 @AllArgsConstructor
+@CrossOrigin("*")
 public class StockController {
 
     private final StockService stockService;
